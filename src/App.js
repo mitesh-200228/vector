@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/" Component={Navbar} />
-          <Route exact path="/rooms" Component={Rooms} />
+          <Route exact path="/:rooms" Component={Rooms} />
           <Route exact path="/settings" Component={Settings} />
         </Routes>
       </BrowserRouter>
