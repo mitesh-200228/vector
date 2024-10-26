@@ -18,16 +18,19 @@ function Matcher() {
   useEffect(() => {
     const fetchData = async () => {
       const datas = await axios.post(
-        `${process.env.REACT_APP_API_URL}/matcher`,
+        'http://localhost:4000/matcher',
+        // `${process.env.REACT_APP_API_URL}/matcher`,
         {
           linkedin_url: `${localStorage.getItem('linkedin')}`,
           room_id: `${localStorage.getItem('room')}`,
         }
       );
+      console.log(datas.data);
+      
       setLoading(true);
-      for (let i = 0; i < datas.data.linkedin_url.length; i++) {
-        const name = datas.data.name[i];
-        const score = datas.data.matrix.data[0][i];
+      for (let i = 0; i < datas.data.names.length; i++) {
+        const name = datas.data.names[i];
+        const score = datas.data.matrix[i];
         mockData.push({
           name,
           progress: (score * 100).toFixed(2),
@@ -42,7 +45,6 @@ function Matcher() {
 
   return (
     <Box>
-      {/* Header */}
       <Box bg="gray.100" p={4}>
         <Flex align="center" justify="space-between" maxW="1200px" mx="auto">
           <Text fontSize="2xl" fontWeight="bold">
