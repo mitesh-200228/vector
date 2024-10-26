@@ -23,7 +23,6 @@ import {
   FiBell,
   FiChevronDown,
 } from 'react-icons/fi';
-import MRooms from '../MainPages/MRooms';
 import MMatcher from '../MainPages/MMatcher';
 
 const SidebarContent = ({ onClose, ...rest }) => {
