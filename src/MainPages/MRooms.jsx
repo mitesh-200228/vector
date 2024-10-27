@@ -20,7 +20,7 @@ const MRooms = () => {
     linkedin_profile: '',
   });
   const [rooms, setRooms] = React.useState([]);
-  const [roomid, setRoomId] = React.useState('');
+  const [roomid] = React.useState('');
   const { hasCopied, onCopy } = useClipboard(roomid);
   const navigate = useNavigate();
   let handleInputChange = e => {
