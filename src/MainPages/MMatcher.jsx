@@ -25,7 +25,7 @@ function Matcher() {
           room_id: `${localStorage.getItem('room')}`,
         }
       );
-      if(data.data.message === 'No users in the data lake!'){
+      if(datas.data.message === 'No users in the data lake!'){
         window.alert("No one is in the room!");
       }
       setLoading(true);
