@@ -34,7 +34,7 @@ const MRooms = () => {
 
   React.useEffect(() => {
     async function trigger() {
-      const RoomsList = await axios.get(`${process.env.PUBLIC_URL}/allrooms`);
+      const RoomsList = await axios.get(`${process.env.REACT_APP_API_URL}/allrooms`);
       setRooms(RoomsList.data.message);
     }
     trigger();
@@ -43,7 +43,7 @@ const MRooms = () => {
   const CreateRoom = async () => {
     try {
       await axios
-        .post(`${process.env.PUBLIC_URL}/rooms`, {linkedin_url:Data.linkedin_profile,room_name:Data.room_name,room_description:Data.room_description})
+        .post(`${process.env.REACT_APP_API_URL}/rooms`, {linkedin_url:Data.linkedin_profile,room_name:Data.room_name,room_description:Data.room_description})
         .then(data => {
           window.alert('Room Created Successfully!');
           navigate('/');
