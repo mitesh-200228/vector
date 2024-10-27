@@ -25,8 +25,9 @@ function Matcher() {
           room_id: `${localStorage.getItem('room')}`,
         }
       );
-      console.log(datas.data);
-      
+      if(data.data.message === 'No users in the data lake!'){
+        window.alert("No one is in the room!");
+      }
       setLoading(true);
       mockData = [];
       for (let i = 0; i < datas.data.names.length; i++) {
