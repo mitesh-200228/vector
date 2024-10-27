@@ -18,8 +18,12 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
-import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
-import MRooms from '../MainPages/MRooms';
+import {
+  FiMenu,
+  FiBell,
+  FiChevronDown,
+} from 'react-icons/fi';
+import MMatcher from '../MainPages/MMatcher';
 
 const SidebarContent = ({ onClose, ...rest }) => {
   return (
@@ -202,7 +206,7 @@ const SidebarWithHeader = () => {
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         <Text>
-          <MRooms />
+          <MMatcher />
         </Text>
       </Box>
     </Box>

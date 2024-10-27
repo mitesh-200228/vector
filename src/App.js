@@ -3,6 +3,7 @@ import { ChakraProvider, Box, Grid, theme } from '@chakra-ui/react';
 import Navbar from './pages/Navbar';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Settings from './pages/Settings';
+import Matcher from './pages/Matcher';
 import Rooms from './pages/Rooms';
 
 function App() {
@@ -11,7 +12,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/" Component={Navbar} />
-          <Route exact path="/:rooms" Component={Rooms} />
+          <Route exact path="/rooms/:rooms" Component={Matcher} />
+          <Route exact path="/rooms" Component={Rooms} />
           <Route exact path="/settings" Component={Settings} />
         </Routes>
       </BrowserRouter>

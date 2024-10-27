@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, useClipboard } from '@chakra-ui/react';
 import {
   Input,
   Button,
@@ -10,37 +10,92 @@ import {
   Heading,
   CardFooter,
 } from '@chakra-ui/react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const MRooms = () => {
-  let [value, setValue] = React.useState('');
-
+  const [Data, setData] = React.useState({
+    room_name: '',
+    room_description: '',
+    linkedin_profile: '',
+  });
+  const [rooms, setRooms] = React.useState([]);
+  const [roomid, setRoomId] = React.useState('');
+  const { hasCopied, onCopy } = useClipboard(roomid);
+  const navigate = useNavigate();
   let handleInputChange = e => {
+    let inputName = e.target.name;
     let inputValue = e.target.value;
-    setValue(inputValue);
+    setData(prevData => ({
+      ...prevData,
+      [inputName]: inputValue,
+    }));
   };
 
   React.useEffect(() => {
-    const func = () => {};
-    func();
+    async function trigger() {
+      const RoomsList = await axios.get('http://localhost:4000/allrooms');
+      setRooms(RoomsList.data.message);
+    }
+    trigger();
   }, []);
 
-  const nextPage = () => {};
+  const CreateRoom = async () => {
+    try {
+      await axios
+        .post('http://localhost:4000/rooms', {linkedin_url:Data.linkedin_profile,room_name:Data.room_name,room_description:Data.room_description})
+        .then(data => {
+          window.alert('Room Created Successfully!');
+          navigate('/');
+        })
+        .catch(err => {
+          window.alert('Internal server error!');
+        });
+    } catch (error) {
+      window.alert('Internal server error!');
+    }
+  };
+
   return (
-    <Box>
+    <Box width={'100%'}>
+      <Text fontWeight={700} fontSize={'2xl'} mt="8px" mb="30px">
+        Make Your First Room
+      </Text>
       <Text mt="8px" mb="8px">
-        Create Room
+        Room Name:
       </Text>
       <Input
-        value={value}
+        value={Data.room_name}
+        name="room_name"
         onChange={handleInputChange}
-        placeholder="Please Enter your Room Number Here..."
+        placeholder="Please Enter your Room Name Here..."
+        size="sm"
+      />
+      <Text mt="8px" mb="8px">
+        Room Description:
+      </Text>
+      <Input
+        value={Data.room_description}
+        name="room_description"
+        onChange={handleInputChange}
+        placeholder="Please Enter your Room Description Here..."
+        size="sm"
+      />
+      <Text mt="8px" mb="8px">
+        Linkedin Profile:
+      </Text>
+      <Input
+        value={Data.linkedin_profile}
+        onChange={handleInputChange}
+        name="linkedin_profile"
+        placeholder="Please Enter your Linkedin Profile Here..."
         size="sm"
       />
       <Button
         marginTop={5}
         backgroundColor={'#000'}
         color={'#fff'}
-        onClick={nextPage()}
+        onClick={CreateRoom}
       >
         Submit
       </Button>
@@ -54,47 +109,47 @@ const MRooms = () => {
       >
         ROOMS LIST
       </Text>
-      <Flex flexDir={'row'}>
-        <Card align="center" w={'30%'} mt={5} marginLeft={0} marginRight={5}>
-          <CardHeader>
-            <Heading size="md">IT Conferences</Heading>
-          </CardHeader>
-          <CardBody alignItems={'center'}>
-            <Text justifySelf={'center'} textAlign={'center'}>
-              View a summary of all your customers over the last month.
-            </Text>
-          </CardBody>
-          <CardFooter>
-            <Button colorScheme="blue">View here</Button>
-          </CardFooter>
-        </Card>
-        <Card align="center" w={'30%'} mt={5} marginLeft={0} marginRight={5}>
-          <CardHeader>
-            <Heading size="md">Gov Officials Conference</Heading>
-          </CardHeader>
-          <CardBody>
-            <Text justifySelf={'center'} textAlign={'center'}>
-              View a summary of all your customers over the last month.
-            </Text>
-          </CardBody>
-          <CardFooter>
-            <Button colorScheme="blue">View here</Button>
-          </CardFooter>
-        </Card>
-        <Card align="center" w={'30%'} mt={5} marginLeft={0} marginRight={5}>
-          <CardHeader>
-            <Heading size="md">Quant Traders Conference</Heading>
-          </CardHeader>
-          <CardBody>
-            <Text justifySelf={'center'} textAlign={'center'}>
-              View a summary of all your customers over the last month.
-            </Text>
-          </CardBody>
-          <CardFooter>
-            <Button colorScheme="blue">View here</Button>
-          </CardFooter>
-        </Card>
-      </Flex>
+      {rooms.map(room => {
+        return (
+          <Flex flexDirection={'column'} width={'100%'}>
+            <Card
+              align="center"
+              mt={5}
+              marginLeft={0}
+              justifyContent={'center'}
+              alignItems={'center'}
+              textAlign={'center'}
+            >
+              <CardHeader>
+                <Heading size="md">{room.room_name}</Heading>
+              </CardHeader>
+              <Flex textAlign={'center'} alignItems={'center'}>
+                <Text fontSize={'13px'} fontWeight={600}>
+                  Room ID: {room._id}
+                </Text>
+                <Button onClick={onCopy} size={'xs'} ml={2}>
+                  {hasCopied ? 'Copied' : 'Copy'}
+                </Button>
+              </Flex>
+              <CardBody>
+                <Text justifySelf={'center'} textAlign={'center'}>
+                  {room.room_description}
+                </Text>
+              </CardBody>
+              <CardFooter>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    navigate(`/rooms/${room._id}`);
+                  }}
+                >
+                  View here
+                </Button>
+              </CardFooter>
+            </Card>
+          </Flex>
+        );
+      })}
     </Box>
   );
 };

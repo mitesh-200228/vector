@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 
-const mockData = [];
+let mockData = [];
 
 function Matcher() {
   const [data, setData] = useState([]);
@@ -28,6 +28,7 @@ function Matcher() {
       console.log(datas.data);
       
       setLoading(true);
+      mockData = [];
       for (let i = 0; i < datas.data.names.length; i++) {
         const name = datas.data.names[i];
         const score = datas.data.matrix[i];
@@ -85,14 +86,12 @@ function Matcher() {
                     {person.name}
                   </Text>
                 </Flex>
-
-                {/* Perceptage match */}
                 <CircularProgress
                   value={person.progress}
-                  size="60px"
+                  size="70px"
                   color="teal.400"
                 >
-                  <CircularProgressLabel>
+                  <CircularProgressLabel fontSize={'12px'} fontWeight={600}>
                     {person.progress}%
                   </CircularProgressLabel>
                 </CircularProgress>

@@ -21,8 +21,9 @@ const Home = () => {
 
   const nextPage = async() => {
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/model`,{'linkedinurl':value,'room_id':room});
-      navigate(`/${room}`);
+      const data = await axios.post(`${process.env.REACT_APP_API_URL}/model`,{'linkedinurl':value,'room_id':room});
+      if(data.data)
+      navigate(`/rooms/${room}`);
     } catch (error) {
       window.alert(error);
     }
