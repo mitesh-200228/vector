@@ -15,6 +15,7 @@ let mockData = [];
 function Matcher() {
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [roomOwner,setRoomOwner] = useState('');
   useEffect(() => {
     const fetchData = async () => {
       const datas = await axios.post(
@@ -41,6 +42,14 @@ function Matcher() {
       }
       const sortedData = mockData.sort((a, b) => b.progress - a.progress);
       setData(sortedData);
+      const owner = await axios.post(
+        // 'http://localhost:4000/getroomdetails',
+        `${process.env.REACT_APP_API_URL}/getroomdetails`,
+        {
+          room_id: `${localStorage.getItem('room')}`,
+        }
+      );
+      setRoomOwner(owner.data.message);
     };
     fetchData();
   }, []);
@@ -50,7 +59,7 @@ function Matcher() {
       <Box bg="gray.100" p={4}>
         <Flex align="center" justify="space-between" maxW="1200px" mx="auto">
           <Text fontSize="2xl" fontWeight="bold">
-            Mitesh Bediya
+            {roomOwner}
           </Text>
           <Avatar
             size="lg"
