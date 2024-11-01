@@ -9,47 +9,55 @@ import {
   CircularProgressLabel,
 } from '@chakra-ui/react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 let mockData = [];
 
 function Matcher() {
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [roomOwner,setRoomOwner] = useState('');
+  const [roomOwner, setRoomOwner] = useState('');
+  const [roomOwnerAvatar, setRoomOwnerAvatar] = useState('');
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
   useEffect(() => {
     const fetchData = async () => {
       const datas = await axios.post(
-        // 'http://localhost:4000/matcher',
-        `${process.env.REACT_APP_API_URL}/matcher`,
+        'http://localhost:4000/matcher',
+        // `${process.env.REACT_APP_API_URL}/matcher`,
         {
           linkedin_url: `${localStorage.getItem('linkedin')}`,
-          room_id: `${localStorage.getItem('room')}`,
+          room_id: `${location.pathname.split('/').pop()}`,
         }
       );
-      if(datas.data.message === 'No users in the data lake!'){
-        window.alert("No one is in the room!");
+      if (datas.data.message === 'No users in the data lake!') {
+        window.alert('No one is in the room!');
       }
       setLoading(true);
       mockData = [];
-      for (let i = 0; i < datas.data.names.length; i++) {
-        const name = datas.data.names[i];
-        const score = datas.data.matrix[i];
-        mockData.push({
-          name,
-          progress: (score * 100).toFixed(2),
-          profilePic: '',
-        });
+      if (datas.data.names !== undefined) {
+        for (let i = 0; i < datas.data.names.length; i++) {
+          const name = datas.data.names[i];
+          const score = datas.data.matrix[i];
+          mockData.push({
+            name,
+            progress: (score * 100).toFixed(2),
+            profilePic: datas.data.profile_pics[i],
+          });
+        }
       }
       const sortedData = mockData.sort((a, b) => b.progress - a.progress);
       setData(sortedData);
       const owner = await axios.post(
-        // 'http://localhost:4000/getroomdetails',
-        `${process.env.REACT_APP_API_URL}/getroomdetails`,
+        'http://localhost:4000/getroomdetails',
+        // `${process.env.REACT_APP_API_URL}/getroomdetails`,
         {
           room_id: `${localStorage.getItem('room')}`,
         }
       );
-      setRoomOwner(owner.data.message);
+      setRoomOwner(owner.data.message[0]);
+      setRoomOwnerAvatar(owner.data.message[1]);
     };
     fetchData();
   }, []);
@@ -63,8 +71,8 @@ function Matcher() {
           </Text>
           <Avatar
             size="lg"
-            name="John Doe"
-            src="https://via.placeholder.com/150" // Replace this with actual image
+            name={roomOwner}
+            src={roomOwnerAvatar} // Replace this with actual image
           />
         </Flex>
       </Box>
